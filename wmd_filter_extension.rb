@@ -1,21 +1,27 @@
-# Uncomment this if you reference any of your controllers in activate
-# require_dependency 'application'
+require_dependency 'application'
 
 class WmdFilterExtension < Radiant::Extension
   version "1.0"
   description "Describe your extension here"
   url "http://yourwebsite.com/wmd_filter"
   
-  # define_routes do |map|
-  #   map.connect 'admin/wmd_filter/:action', :controller => 'admin/wmd_filter'
-  # end
-  
   def activate
-    # admin.tabs.add "Wmd Filter", "/admin/wmd_filter", :after => "Layouts", :visibility => [:all]
+    # Load the filter
+    WmdFilter
+    
+    # Add the appropriate stylesheets to the javascripts array in the page and snippet controller
+    include_js = lambda do
+      before_filter :add_wmd_javascripts, :only => [:edit, :new]
+      private
+      def add_wmd_javascripts
+        @javascripts << 'extensions/wmd_filter/wmd_filter' << 'extensions/wmd_filter/wmd'
+      end
+    end
+    Admin::PageController.class_eval &include_js
+    Admin::SnippetController.class_eval &include_js
   end
-  
+
   def deactivate
-    # admin.tabs.remove "Wmd Filter"
   end
   
 end
