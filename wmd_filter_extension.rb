@@ -2,26 +2,15 @@ require_dependency 'application'
 
 class WmdFilterExtension < Radiant::Extension
   version "1.0"
-  description "Describe your extension here"
-  url "http://yourwebsite.com/wmd_filter"
+  description "WMD Markdown visual editor (<a href='http://wmd-editor.com'>http://wmd-editor.com</a>)"
+  url "http://github.com/MrGossett/radiant-wmd-filter-extension"
   
   def activate
-    # Load the filter
-    WmdFilter
-    
-    # Add the appropriate stylesheets to the javascripts array in the page and snippet controller
-    include_js = lambda do
-      before_filter :add_wmd_javascripts, :only => [:edit, :new]
-      private
-      def add_wmd_javascripts
-        @javascripts << 'extensions/wmd_filter/wmd_filter' << 'extensions/wmd_filter/wmd'
-      end
-    end
-    Admin::PageController.class_eval &include_js
-    Admin::SnippetController.class_eval &include_js
+    admin.page.edit.add :parts_bottom, 'edit_wmd', :before => 'edit_layout_and_type'
   end
 
   def deactivate
+    admin.page.edit.form.delete 'edit_wmd'
   end
-  
+
 end
