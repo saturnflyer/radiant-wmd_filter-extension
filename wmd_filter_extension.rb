@@ -1,16 +1,19 @@
 require_dependency 'application'
 
 class WmdFilterExtension < Radiant::Extension
-  version "1.0"
+  version "1.1"
   description "WMD Markdown visual editor (<a href='http://wmd-editor.com'>http://wmd-editor.com</a>)"
-  url "http://github.com/MrGossett/radiant-wmd-filter-extension"
+  url "http://github.com/saturnflyer/radiant-wmd_filter-extension"
   
   def activate
-    admin.page.edit.add :parts_bottom, 'edit_wmd', :before => 'edit_layout_and_type'
-  end
-
-  def deactivate
-    admin.page.edit.form.delete 'edit_wmd'
+    if ActiveRecord::Base.connection.tables.include?('config')
+      Radiant::Config['wmd.output'] = "Markdown" unless Radiant::Config['wmd.output']
+      Radiant::Config['wmd.lineLength'] = "60" unless Radiant::Config['wmd.lineLength']
+      Radiant::Config['wmd.buttons'] = "bold italic | link blockquote code image | ol ul heading hr" unless Radiant::Config['wmd.buttons']
+      Radiant::Config['wmd.autostart'] = "false" unless Radiant::Config['wmd.autostart']
+    end
+    admin.page.edit.add :parts_bottom, 'filter_preview', :before => 'edit_layout_and_type'
+    # admin.snippet.edit.add :form_bottom, 'admin/page/filter_preview', :after => 'edit_buttons'
   end
 
 end

@@ -1,9 +1,7 @@
-wmd_options = { autostart: false };
-
 /***** Make sure WMD has finished loading *****/
 if (!Attacklab || !Attacklab.wmd) {
     alert("WMD hasn't finished loading!");
-    return;
+    // return;
 }
 
 var instances = []
@@ -21,7 +19,9 @@ var WmdFilterPartObserver = Class.create({
   
   setup: function() {
     this.filter_select_menu.observe('change', this.handleFilterChanged.bind(this));
-    this.updateTextArea();
+    if(this.isWmdFilterSelected()){
+      this.updateTextArea();
+    }
   },
   
   handleFilterChanged: function(event) {
@@ -29,29 +29,24 @@ var WmdFilterPartObserver = Class.create({
   },
   
   isWmdFilterSelected: function() {
-    return this.filter_select_menu.options[this.filter_select_menu.selectedIndex].value == 'WMD';
+    return this.filter_select_menu.options[this.filter_select_menu.selectedIndex].value == 'Markdown';
   },
   
   updateTextArea: function() {
-    if(this.isWmdFilterSelected() && wmd.get(this.textarea.id) == null) {
+    if(this.isWmdFilterSelected()) {
       this.setEditor();
-    } else if (!this.isWmdFilterSelected() && wmd.get(this.textarea.id) != null) {
+    } else if (!this.isWmdFilterSelected()) {
       this.unsetEditor();
     }
   },
   
   setEditor: function() {
-
     var previewDiv = document.createElement("div");
-    this.textarea.style.width = '49%'
-    this.textarea.style.float = 'left'
-    previewDiv.style.width = '49%'
-    previewDiv.style.float = 'left'
-    // var br = document.createElement("br");
-    // br.style.clear = 'both'
-    this.textarea.parent.appendChild(previewDiv);
+    previewDiv.id = "filter_preview";
+    this.element.appendChild(previewDiv);
 
     /***** build the preview manager *****/
+    textarea = this.textarea
     var panes = {input:textarea, preview:previewDiv, output:null};
     var previewManager = new Attacklab.wmd.previewManager(panes);
 
@@ -72,8 +67,6 @@ var WmdFilterPartObserver = Class.create({
 
       // remove the dom element
       inst.div.parentNode.removeChild(inst.div);
-      this.textarea.style.width = '100%'
-      this.textarea.style.float = 'none'
     }
   }
   
@@ -105,11 +98,11 @@ WmdSnippetPartObserver.init = function() {
   snippet_content = $('snippet_content');
   snippet_filter = $('snippet_filter');
   if (snippet_content && snippet_filter) {
-    new TinymceSnippetPartObserver(snippet_content, snippet_filter);
+    new WmdSnippetPartObserver(snippet_content, snippet_filter);
   }
 }
 
 Ajax.Responders.register({ onComplete: WmdFilterPartObserver.init });
 
 document.observe('dom:loaded', WmdFilterPartObserver.init);
-document.observe('dom:loaded', WmdSnippetPartObserver.init);
+// document.observe('dom:loaded', WmdSnippetPartObserver.init);
