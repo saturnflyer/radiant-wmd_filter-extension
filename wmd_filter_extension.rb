@@ -13,7 +13,7 @@ class WmdFilterExtension < Radiant::Extension
       Radiant::Config['wmd.autostart'] = "false" unless Radiant::Config['wmd.autostart']
     end
     admin.page.edit.add :parts_bottom, 'filter_preview', :before => 'edit_layout_and_type'
-    # admin.snippet.edit.add :form_bottom, 'admin/page/filter_preview', :after => 'edit_buttons'
+    admin.snippet.edit.add :form_bottom, 'admin/page/filter_preview', :after => 'edit_buttons'
   end
 
 end

@@ -43,7 +43,7 @@ var WmdFilterPartObserver = Class.create({
   setEditor: function() {
     var previewDiv = document.createElement("div");
     previewDiv.id = "filter_preview";
-    this.element.appendChild(previewDiv);
+    Element.insert(this.textarea, {after: previewDiv});
 
     /***** build the preview manager *****/
     textarea = this.textarea
@@ -89,7 +89,8 @@ WmdFilterPartObserver.init = function() {
 var WmdSnippetPartObserver = Class.create(WmdFilterPartObserver, {
   initialize: function(snippet_textarea, select_filter) {
     this.filter_select_menu = select_filter;
-    this.textarea = snippet_textarea;
+    this.textarea = snippet_textarea; 
+    this.element = this.textarea.up('form');
     this.setup();
   },
 });
@@ -105,4 +106,4 @@ WmdSnippetPartObserver.init = function() {
 Ajax.Responders.register({ onComplete: WmdFilterPartObserver.init });
 
 document.observe('dom:loaded', WmdFilterPartObserver.init);
-// document.observe('dom:loaded', WmdSnippetPartObserver.init);
+document.observe('dom:loaded', WmdSnippetPartObserver.init);
