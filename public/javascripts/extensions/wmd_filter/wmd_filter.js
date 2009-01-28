@@ -97,7 +97,11 @@ var WmdSnippetPartObserver = Class.create(WmdFilterPartObserver, {
 
 WmdSnippetPartObserver.init = function() {
   snippet_content = $('snippet_content');
-  snippet_filter = $('snippet_filter');
+  if($('snippet_filter_id')){
+    snippet_filter = $('snippet_filter_id');
+  } else {
+    snippet_filter = $('snippet_filter');
+  }
   if (snippet_content && snippet_filter) {
     new WmdSnippetPartObserver(snippet_content, snippet_filter);
   }
